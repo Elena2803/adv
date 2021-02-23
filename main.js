@@ -14,9 +14,9 @@ const renderProduct = (title, price) => {
 }
 
 const renderProducts = (list) => {
-    const productList = list.map(function (item) {
-            return renderProduct(item.title, item.price);
-        });
+    const productList = list.forEach(function (item) {
+        return renderProduct(item.title, item.price);
+    });
 
     console.log(productList);
     document.querySelector('.products').innerHTML = productList;
