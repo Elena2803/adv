@@ -13,10 +13,10 @@ const renderProduct = ({ title, price }, img = 'https://placehold.it/200x150') =
         <button class='by-btn'>Добавить в корзину</button>
         </div>
     </div>`;
-}
+
 
 const renderProducts = list => { 
-    document.querySelector('.products').insertAdjacentHTML('beforeend', list.map(item => renderProduct(item)).join('');
+    document.querySelector('.products').insertAdjacentHTML('beforeend', list.map(item => renderProduct(item)).join(''));
     };
 
 renderProducts(products);
