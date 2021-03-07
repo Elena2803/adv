@@ -1,4 +1,4 @@
-const API = 'https://raw.githubusercontent.com/GeekBrainsTutotial/online-store-api/master/responses';
+const API = 'https://raw.githubusercontent.com/GeekBrainsTutorial/online-store-api/master/responses';
 let getRequest = (url, callBack) => {
     let xhr = new XMLHttpRequest();
     xhr.open('GET', url, true);
@@ -29,7 +29,7 @@ class ProductList {
         this.#getProducts()
             .then((data) => {
                 this.#goods = [...data];
-                this["__#43774@#render"]();
+                this.#render();
             });
     }
 
