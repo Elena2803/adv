@@ -53,7 +53,7 @@ class ProductItem {
     }
 }
 
-const ProductList = new ProductList();
+const productList = new ProductList();
 
 
 /*const products = [
