@@ -1,5 +1,5 @@
 const API = 'https://raw.githubusercontent.com/GeekBrainsTutorial/online-store-api/master/responses';
-let getRequest = (url, callBack) => {
+/*let getRequest = (url, callBack) => {
     let xhr = new XMLHttpRequest();
     xhr.open('GET', url, true);
     xhr.onreadystatechange = () => {
@@ -12,28 +12,48 @@ let getRequest = (url, callBack) => {
         }
     }
     xhr.send();
+};*/
+let getRequest = (url) => {
+    return new Promise((resolve, reject) => {
+        let xhr = new XMLHttpRequest();
+        xhr.open('GET', url, true);
+        xhr.onreadystatechange = () => {
+            if (xhr.readyState === 4) {
+                if (xhr.status !== 200) {
+                    rehect('Error');
+                } else {
+                    resolve(xhr.responseText);
+                }
+            }
+        };
+        xhr.send();
+    })
 };
 
-class ProductList {
-    #goods;
-    #allProducts;
+class List {
+    //#goods;
+    //#allProducts;
 
-    constructor(container = ".products") {
+    constructor(url, container, list = listContext) {
         //console.log('constructor');
         this.container = container;
-        this.#goods = [];
-        this.#allProducts = [];
+        this.list = list;
+        this.url = url;
+        this.goods = [];
+        this.allProducts = [];
+        this.filtered = [];
+        this._init();
 
         //this.#fetchGoods();
         //this.#render();
-        this.#getProducts()
+        /*this.#getProducts()
             .then((data) => {
                 this.#goods = [...data];
                 this.#render();
-            });
+            });*/
     }
 
-    goodsTotalPrice() {
+    /*goodsTotalPrice() {
         return this.#goods.reduce((sum, { price }) => sum + price, 0);
     }
 
@@ -46,36 +66,126 @@ class ProductList {
         ];
     }*/
 
-    #getProducts() {
-        return fetch(`${API}/catalogData.json`)
-            .then((response) => response.json())
-            .catch((err) => {
-                console.log(err);
+    getJson() {
+        return fetch(url ? url : `${API + this.url}`)
+            .then(result => result.json())
+            .catch((error) => {
+                console.log(error);
             });
+    }
+
+    handleData(data) {
+        this.goods = [...data];
+        this.render();
+    }
+
+    calcSum() {
+        return this.allProducts.reduce((accum, item) => accum + item.price, 0);
     }
 
     #render() {
         const block = document.querySelector(this.container);
 
-        this.#goods.forEach((product) => {
-            const productObject = new ProductItem(product);
+        // this.#goods.forEach((product) => {
+        for (let product of this.goods) {
+            console.log(this.container.name);
+            const productObject = new this.list[this.constructor.name](product);
             console.log(productObject);
-            this.#allProducts.push(productObject);
+            this.allProducts.push(productObject);
             block.insertAdjacentHTML('beforeend', productObject.render());
-        });
+            //});
+        }
+    }
+
+    filter(value) {
+        const regexp = new RegExp(value, 'i');
+        this.filtered = this.allProducts.filter(product => regexp.test(product.product_name));
+        this.allProducts.forEach(el => {
+            const block = document.querySelector(`.product-item[data-id='${el.id_product}']`);
+            if (!this.filtered.includes(el)) {
+                block.classList.add('invisible');
+            } else {
+                block.classList.remove('invisible');
+            }
+        })
+    }
+    _init() {
+        return false
     }
 }
 
-class ProductItem {
-    constructor(product, img = 'https://placehold.it/200x150') {
-        this.title = product.title;
-        this.price = product.price;
-        this.id = product.id;
+class Item {
+    constructor(el, img = 'https://placehold.it/200x150') {
+        // this.title = product.title;
+        //this.price = product.price;
+        this.product_name = el.product_name;
+        this.price = el.price;
+        //this.id = product.id;
+        this.id_product = el.id_product;
         this.img = img;
     }
 
     render() {
-        return `<div class='product-item' data-id='${this.id}'>
+        return '';
+    }
+}
+
+class productList extends List {
+    constructor(cart, container = '.products', url = '/catalogData.json') {
+        super(url, container);
+        this.cart = cart;
+        this.getJson()
+            .then(data => {
+                this.handleData(data.contents);
+            });
+    }
+
+
+    _init() {
+        document.querySelector(this.container).addEventListener('click', e => {
+            if (e.target.classList.contains('buy-btn')) {
+                this.cart.addProduct(e.target);
+            }
+        });
+        document.querySelector('.search-form').addEventListener('submit', e => {
+            e.preventDefault();
+            this.filter(document.querySelector('.search-field').value)
+        })
+    }
+}
+
+class ProductItem extends Item {
+    render() {
+        return `<div class='product-item' data-id='${this.id_product}'>
+                <img src='${this.img}' alt='Some img'>
+                    <div class='desc'>
+                        <h3>${this.product_name}</h3>
+                        <p>${this.price}₽</p>
+                        <button class='buy-btn'
+                        data-id='$(this.id_product)'
+                        data-name='$(this.product_name)'
+                       data-price='$(this.price)'>Купить</button>
+                    </div>
+                    </div>`;
+    }
+}
+
+class Cart extends List {
+    constructor(container = '.cart-block', url = '/getBasket.json') {
+        super(url, container);
+        this.getJson()
+            .then(data => {
+                this.handleData(data.contents);
+            });
+    }
+
+    addProduct(element) {
+
+    }
+}
+
+/*render() {
+    return `<div class='product-item' data-id='${this.id}'>
             <img src='${this.img}' alt='Some img'>
                 <div class='desc'>
                     <h3>${this.title}</h3>
@@ -83,7 +193,7 @@ class ProductItem {
                     <button class='buy-btn'>Купить</button>
                 </div>
                 </div>`;
-    }
+}
 }
 
 const productList = new ProductList();
