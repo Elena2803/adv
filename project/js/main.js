@@ -210,7 +210,7 @@ class Cart extends List {
                 if (data.result === 1) {
                     let productId = +element.dataset['id'];
                     let find = this.allProducts.find(product => product.id_product === productId);
-                    if (find.quantity > 1{
+                    if (find.quantity > 1) {
                         find.quantity--;
                         this._updateCart(find);
                     } else {
