@@ -66,7 +66,7 @@ class List {
         ];
     }*/
 
-    getJson() {
+    getJson(url) {
         return fetch(url ? url : `${API + this.url}`)
             .then(result => result.json())
             .catch((error) => {
@@ -83,12 +83,12 @@ class List {
         return this.allProducts.reduce((accum, item) => accum + item.price, 0);
     }
 
-    #render() {
+    render() {
         const block = document.querySelector(this.container);
 
         // this.#goods.forEach((product) => {
         for (let product of this.goods) {
-            console.log(this.container.name);
+            console.log(this.constructor.name);
             const productObject = new this.list[this.constructor.name](product);
             console.log(productObject);
             this.allProducts.push(productObject);
@@ -135,23 +135,21 @@ class productList extends List {
         super(url, container);
         this.cart = cart;
         this.getJson()
-            .then(data => {
-                this.handleData(data.contents);
-            });
-    }
+            .then(data => this.handleData(data));
+}
 
 
-    _init() {
-        document.querySelector(this.container).addEventListener('click', e => {
-            if (e.target.classList.contains('buy-btn')) {
-                this.cart.addProduct(e.target);
-            }
-        });
-        document.querySelector('.search-form').addEventListener('submit', e => {
-            e.preventDefault();
-            this.filter(document.querySelector('.search-field').value)
-        })
-    }
+_init() {
+    document.querySelector(this.container).addEventListener('click', e => {
+        if (e.target.classList.contains('buy-btn')) {
+            this.cart.addProduct(e.target);
+        }
+    });
+    document.querySelector('.search-form').addEventListener('submit', e => {
+        e.preventDefault();
+        this.filter(document.querySelector('.search-field').value)
+    })
+}
 }
 
 class ProductItem extends Item {
@@ -162,9 +160,9 @@ class ProductItem extends Item {
                         <h3>${this.product_name}</h3>
                         <p>${this.price}₽</p>
                         <button class='buy-btn'
-                        data-id='$(this.id_product)'
-                        data-name='$(this.product_name)'
-                       data-price='$(this.price)'>Купить</button>
+                        data-id='${this.id_product}'
+                        data-name='${this.product_name}'
+                       data-price='${this.price}'>Купить</button>
                     </div>
                     </div>`;
     }
@@ -180,7 +178,7 @@ class Cart extends List {
     }
 
     addProduct(element) {
-        this.getJson(`${API}addToBasket.json`)
+        this.getJson(`${API}/addToBasket.json`)
             .then(data => {
                 if (data.result === 1) {
                     let productId = +element.dataset['id'];
