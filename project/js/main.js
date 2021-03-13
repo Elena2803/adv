@@ -3,9 +3,10 @@ const API = 'https://raw.githubusercontent.com/GeekBrainsTutorial/online-store-a
 const app = new Vue({
     el: '#app',
     data: {
-        catalogUrl: '/catalogData.json',
+        userSearch: '',
+        /*catalogUrl: '/catalogData.json',
         imgCatalog: 'https://placehold.it/200x150',
-        products: [],
+        products: [],*/
     },
     methods: {
         getJson(url) {
@@ -15,54 +16,57 @@ const app = new Vue({
                     console.log(error);
                 })
         },
-        addProduct(product) {
+    },
+    /* addProduct(product) {
 console.log(product)
-        }
-    },
-    beforeCreate(){
-        console.log('beforeCreate');
-    },
-    created(){
-        console.log('created');
-        this.getJson(`${API+this.catalogUrl}`)
-        .then(data=>{
-            for(let el of data){
-                this.products.push(el);
-            }
-        });
-    },
-    beforeMount(){
-        console.log('beforeMount');
-    },
-    mounted(){
-        console.log('mounted');
-    },
-    beforeUpdate(){
-        console.log('beforeUpdate');
-    },
-    updated(){
-        console.log('updated');
-    },
-    beforeDestroy(){
-        console.log('beforeDestroy');
-    },
-    destroyed(){
-        console.log('destroyed');
+     }
+ },
+ beforeCreate(){
+     console.log('beforeCreate');
+ },
+ created(){
+     console.log('created');
+     this.getJson(`${API+this.catalogUrl}`)
+     .then(data=>{
+         for(let el of data){
+             this.products.push(el);
+         }
+     });
+ },
+ beforeMount(){
+     console.log('beforeMount');
+ },*/
+    mounted() {
+        console.log(this);
     }
 });
+
+/*beforeUpdate(){
+    console.log('beforeUpdate');
+},
+updated(){
+    console.log('updated');
+},
+beforeDestroy(){
+    console.log('beforeDestroy');
+},
+destroyed(){
+    console.log('destroyed');
+}
+});
 /*let getRequest = (url, callBack) => {
-    let xhr = new XMLHttpRequest();
-    xhr.open('GET', url, true);
-    xhr.onreadystatechange = () => {
-        if (xhr.readyState === 4) {
-            if (xhr.status !== 200) {
-                console.log('Error');
-            } else {
-                callBack(xhr.responseText);
-            }
+let xhr = new XMLHttpRequest();
+xhr.open('GET', url, true);
+xhr.onreadystatechange = () => {
+    if (xhr.readyState === 4) {
+        if (xhr.status !== 200) {
+            console.log('Error');
+        } else {
+            callBack(xhr.responseText);
         }
     }
-    xhr.send();
+}
+xhr.send();
 };*/
 /*let getRequest = (url) => {
     return new Promise((resolve, reject) => {
@@ -102,7 +106,7 @@ class List {
                 this.#goods = [...data];
                 this.#render();
             });*/
-    
+
 
 /*goodsTotalPrice() {
     return this.#goods.reduce((sum, { price }) => sum + price, 0);
